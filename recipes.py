@@ -58,13 +58,37 @@ class Recipe:
         for ing in self.ingredients:
             lines.append(f"  - {ing}")
         return "\n".join(lines)
+    
+
+class DietaryRecipe(Recipe):
+    def __init__(self, title, diet_type, ingredients=None):
+        if ingredients is None:
+            ingredients=[]
+        super().__init__(title, ingredients)
+        self.diet_type=diet_type
+
+    def scale(self, ratio):
+        scaled = super().scale(ratio)
+        return DietaryRecipe(scaled.title, self.diet_type, scaled.ingredients)
+    
+    def __str__(self):
+        return f"[{self.diet_type}] {super().__str__()}"
+        
 
 if __name__ == "__main__":
-    pizza = Recipe("Пицца Маргарита", [
-        Ingredient("Мука", 500, "г"),
-        Ingredient("Сыр", 100, "г"),
-        Ingredient("Помидоры", 200, "г"),
-    ])
+    vegan_pizza = DietaryRecipe(
+        "Пицца Маргарита",
+        "веган",
+        [Ingredient("Тесто", 300, "г"), Ingredient("Соус", 100, "г")]
+    )
 
-    print(len(pizza))    # 3
-    print(pizza)         # рецепт целиком
+    print(vegan_pizza)
+    print()
+
+    big = vegan_pizza.scale(2)
+    print(big)
+    print()
+
+    # Проверяем, что scale вернул именно DietaryRecipe
+    print(type(big).__name__)        # DietaryRecipe
+    print(big.diet_type)             # веган
