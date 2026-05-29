@@ -3,8 +3,8 @@
 Проект по курсу «Технологии программирования». HW2. Классы `Ingredient`, `Recipe`, `DietaryRecipe`, `ShoppingList` с тестами на pytest.
 ## Установка
 ​```bash
-git clone https://github.com/nmbabkin/<repo>.git
-cd <repo>
+git clone https://github.com/nmbabkin/tp_hw2.git
+cd tp_hw2
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
