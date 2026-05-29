@@ -115,28 +115,3 @@ class ShoppingList:
         return new_list
 
 
-if __name__ == "__main__":
-    pizza = Recipe("Пицца", [Ingredient("Мука", 500, "г")])
-    pasta = Recipe("Паста", [Ingredient("Мука", 300, "г")])
-    salad = Recipe("Салат", [Ingredient("Огурец", 2, "шт")])
-
-    list1 = ShoppingList()
-    list1.add_recipe(pizza, 1)
-
-    list2 = ShoppingList()
-    list2.add_recipe(pasta, 1)
-    list2.add_recipe(salad, 1)
-
-    combined = list1 + list2
-
-    print("Объединённый список:")
-    for ing in combined.get_list():
-        print(f"  {ing}")
-
-    print("\nИсходный list1 не изменился:")
-    for ing in list1.get_list():
-        print(f"  {ing}")
-
-    print("\nИсходный list2 не изменился:")
-    for ing in list2.get_list():
-        print(f"  {ing}")
