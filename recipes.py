@@ -75,20 +75,68 @@ class DietaryRecipe(Recipe):
         return f"[{self.diet_type}] {super().__str__()}"
         
 
+class ShoppingList:
+    def __init__(self):
+        self._items = []
+
+    def add_recipe(self, recipe, portions):
+        if portions <= 0:
+            raise ValueError("Количество порций должно быть положительным")
+        scaled = recipe.scale(portions)
+        for ingredient in scaled.ingredients:
+            self._items.append((ingredient, recipe.title))
+
+    def remove_recipe(self, title):
+        self._items = [
+            (ingredient,recipe_title)
+            for ingredient, recipe_title in self._items
+            if recipe_title!=title
+        ]
+
+    def get_list(self):
+        aggregated = {}
+        for ingredient, _ in self._items:
+            key = (ingredient.name, ingredient.unit)
+            if key in aggregated:
+                aggregated[key]+=ingredient.quantity
+            else:
+                aggregated[key]=ingredient.quantity
+
+        result = [
+            Ingredient(name, quantity, unit)
+            for (name, unit), quantity in aggregated.items()
+        ]
+        result.sort(key=lambda ing: ing.name)
+        return result
+    
+    def __add__(self, other):
+        new_list = ShoppingList()
+        new_list._items = self._items+other._items
+        return new_list
+
+
 if __name__ == "__main__":
-    vegan_pizza = DietaryRecipe(
-        "Пицца Маргарита",
-        "веган",
-        [Ingredient("Тесто", 300, "г"), Ingredient("Соус", 100, "г")]
-    )
+    pizza = Recipe("Пицца", [Ingredient("Мука", 500, "г")])
+    pasta = Recipe("Паста", [Ingredient("Мука", 300, "г")])
+    salad = Recipe("Салат", [Ingredient("Огурец", 2, "шт")])
 
-    print(vegan_pizza)
-    print()
+    list1 = ShoppingList()
+    list1.add_recipe(pizza, 1)
 
-    big = vegan_pizza.scale(2)
-    print(big)
-    print()
+    list2 = ShoppingList()
+    list2.add_recipe(pasta, 1)
+    list2.add_recipe(salad, 1)
 
-    # Проверяем, что scale вернул именно DietaryRecipe
-    print(type(big).__name__)        # DietaryRecipe
-    print(big.diet_type)             # веган
+    combined = list1 + list2
+
+    print("Объединённый список:")
+    for ing in combined.get_list():
+        print(f"  {ing}")
+
+    print("\nИсходный list1 не изменился:")
+    for ing in list1.get_list():
+        print(f"  {ing}")
+
+    print("\nИсходный list2 не изменился:")
+    for ing in list2.get_list():
+        print(f"  {ing}")
